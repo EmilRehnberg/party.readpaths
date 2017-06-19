@@ -1,3 +1,7 @@
+readNodeWeights <- function(ct, node) party::nodes(ct, node)[[1]]$weights
+nodesFirstTreeWeightIsOne <- function(ct, node) party::nodes(ct, node)[[1]][2][[1]] == 1
+readInnerNodes <- function(sgmnts, node) setdiff( 1:(node - 1) ,sgmnts[sgmnts < node])
+
 readSplitter <- function(nodeSplit){
   splitPoint <- nodeSplit$splitpoint
   if ("levels" %>% is_in(splitPoint %>% attributes %>% names)) {

@@ -10,18 +10,14 @@
 #' readTerminalNodePaths(act, airq)
 readTerminalNodePaths <- function (ct, dts) {
   if (ct@tree$left %>% identical(NULL)) return(data.frame())
-  nodeWeights <- function(Node) party::nodes(ct, Node)[[1]]$weights
   sgmnts <- ct %>% party::where %>% unique
-  nodesFirstTreeWeightIsOne <- function(node) party::nodes(ct, node)[[1]][2][[1]] == 1
 
   # Take the inner nodes smaller than the selected terminal node
-  innerNodes <-
-    function(Node) setdiff( 1:(Node - 1)
-                           ,sgmnts[sgmnts < Node])
   pathForTerminalNode <- function(terminalNode){
-    innerNodes(terminalNode) %>%
+    readInnerNodes(sgmnts, terminalNode) %>%
       sapply(function(innerNode){
-        if (any(nodeWeights(terminalNode) & nodesFirstTreeWeightIsOne(innerNode))) innerNode
+        if (any(readNodeWeights(ct, terminalNode) &
+                nodesFirstTreeWeightIsOne(ct, innerNode))) innerNode
        }) %>%
       unlist
   }
