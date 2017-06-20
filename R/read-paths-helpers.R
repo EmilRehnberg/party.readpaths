@@ -28,15 +28,12 @@ hasWeigths <- function(ct, path, terminalNode, pathNumber){
     which
 }
 
-# TODO: extract utility helper for first occurance
 rmDuplicateVariables <- function(filters){
   filters %>%
     rev %>%
     data.frame( varName = gsub("^(\\w+).*$", "\\1", .)
                ,filter = .) %>%
-    dplyr::group_by(varName) %>%
-    dplyr::mutate(rn = row_number()) %>%
-    dplyr::filter(rn == 1) %>%
+    keepFirstOccuranceForCol("varName") %>%
     magrittr::use_series("filter") %>%
     as.character
 }
