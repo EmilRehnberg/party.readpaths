@@ -1,4 +1,3 @@
-library(party.readpaths)
 describe("readCtreePaths()", {
   airq <- subset(airquality, !is.na(Ozone))
   act <- party::ctree(Ozone ~ .,data = airq)
@@ -14,27 +13,26 @@ describe("readCtreePaths()", {
       expect_equal(data.frame())
   })
 
+  pathForNode <- function(paths, nodeNumber){
+    paths %>%
+      dplyr::filter(Node == nodeNumber) %>%
+      use_series(Path) %>%
+      as.character
+  }
+
   it("includes expected terminal nodes", {
-    node3path <- "Wind <= 6.9 & Temp <= 82"
-    paths %>%
-      dplyr::filter(Node == 3) %>%
-      use_series(Path) %>%
-      as.character %>%
-      expect_equal(node3path)
+    expect_equal(pathForNode(paths, 3), "Wind <= 6.9 & Temp <= 82")
+    expect_equal(pathForNode(paths, 6), "Temp > 77 & Wind > 6.9")
+    expect_equal(pathForNode(paths, 8), "Wind <= 10.3 & Temp > 82")
+  })
 
-    node6path <- "Temp > 77 & Wind > 6.9"
-    paths %>%
-      dplyr::filter(Node == 6) %>%
-      use_series(Path) %>%
-      as.character %>%
-      expect_equal(node6path)
+  it("works as expected with mixed ordinal and nominal variables", {
+    load("./lead-buyrate.RData") # loads gdt
+    gct <- ctree( is_buyer ~ ., data = gdt)
+    mixedPaths <- readCtreePaths(gct, gdt)
 
-    node8path <- "Wind <= 10.3 & Temp > 82"
-    paths %>%
-      dplyr::filter(Node == 8) %>%
-      use_series(Path) %>%
-      as.character %>%
-      expect_equal(node8path)
+    expect_equal(pathForNode(mixedPaths, 4), "city == {LA}")
+    expect_equal(pathForNode(mixedPaths, 8), "point > 0.851221123244613 & age <= mid & city == {Chigaco, Memphis, Boston}")
   })
 
   it("order by terminal node number", {
