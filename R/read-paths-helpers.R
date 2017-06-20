@@ -22,10 +22,19 @@ readSplitter <- function(nodeSplit){
   }
 }
 
+pathFromPathNumber <- function(path, pathNumber, terminalNode){
+  pathNumber %>%
+    magrittr::equals(path %>% length) %>%
+    ifelse(terminalNode, path[pathNumber + 1])
+}
+
 hasWeigths <- function(ct, path, terminalNode, pathNumber){
   ct %>%
-    party::nodes(pathNumber %>% magrittr::equals(path %>% length) %>% ifelse(terminalNode, path[pathNumber + 1]) ) %>%
-    .[[1]] %>% magrittr::use_series("weights") %>% as.logical %>% which
+    party::nodes(pathFromPathNumber(path, pathNumber, terminalNode)) %>%
+    dplyr::first %>%
+    magrittr::use_series("weights") %>%
+    as.logical %>%
+    which
 }
 
 rmDuplicateVariables <- function(filters){
