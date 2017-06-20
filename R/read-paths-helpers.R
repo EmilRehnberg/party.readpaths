@@ -28,6 +28,7 @@ hasWeigths <- function(ct, path, terminalNode, pathNumber){
     which
 }
 
+# TODO: extract utility helper for first occurance
 rmDuplicateVariables <- function(filters){
   filters %>%
     rev %>%
@@ -48,17 +49,20 @@ dataFilter <- function(ct, dts, path, terminalNode, pathNumber){
 
 readSplittingCriteria <- function(sgmnts, ct, dts){
   sgmnts %>% sapply(function(terminalNode){
-    path <- terminalNode %>% readNodePathForTerminalNodes(sgmnts, ct)
-
-    path %>% length %>% seq %>%
-      sapply(function(nodeNumber){
-        dataFilter(ct, dts, path, terminalNode, nodeNumber)
-       }, simplify = FALSE) %>%
-      unlist %>% rmDuplicateVariables %>%
-      paste(collapse = " & ") %>%
-      data.frame(Node = terminalNode, Path = .)
-
+    terminalNode %>%
+      readNodePathForTerminalNodes(sgmnts, ct) %>%
+      readSplitCriterionForPath(ct, dts, terminalNode)
   }, simplify = FALSE) %>%
     Reduce(f = rbind) %>%
     dplyr::arrange(Node)
+}
+
+readSplitCriterionForPath <- function(path, ct, dts, terminalNode){
+  path %>% length %>% seq %>%
+    sapply(function(nodeNumber){
+      dataFilter(ct, dts, path, terminalNode, nodeNumber)
+     }, simplify = FALSE) %>%
+    unlist %>% rmDuplicateVariables %>%
+    paste(collapse = " & ") %>%
+    data.frame(Node = terminalNode, Path = .)
 }
