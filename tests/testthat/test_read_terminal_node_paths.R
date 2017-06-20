@@ -1,8 +1,8 @@
 library(party.readpaths)
-describe("readTerminalNodePaths()", {
+describe("readCtreePaths()", {
   airq <- subset(airquality, !is.na(Ozone))
   act <- party::ctree(Ozone ~ .,data = airq)
-  paths <- readTerminalNodePaths(act, airq)
+  paths <- readCtreePaths(act, airq)
 
   it("returns a data.frame", {
     expect_is(paths, "data.frame")
@@ -10,7 +10,7 @@ describe("readTerminalNodePaths()", {
 
   it("returns empty data.frame for empty trees", {
     party::ctree(Day ~ ., data = airquality) %>%
-      readTerminalNodePaths(airquality) %>%
+      readCtreePaths(airquality) %>%
       expect_equal(data.frame())
   })
 

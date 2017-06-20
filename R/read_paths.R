@@ -7,34 +7,10 @@
 #' @examples
 #' airq <- subset(airquality, !is.na(Ozone))
 #' act <- party::ctree(Ozone ~ .,data = airq)
-#' readTerminalNodePaths(act, airq)
-readTerminalNodePaths <- function (ct, dts) {
-  if (ct@tree$left %>% identical(NULL)) return(data.frame())
-  sgmnts <- ct %>% party::where %>% unique
-
-  # Take the inner nodes smaller than the selected terminal node
-  pathForTerminalNode <- function(terminalNode){
-    readInnerNodes(sgmnts, terminalNode) %>%
-      sapply(function(innerNode){
-        if (any(readNodeWeights(ct, terminalNode) &
-                nodesFirstTreeWeightIsOne(ct, innerNode))) innerNode
-       }) %>%
-      unlist
-  }
-
-  # Find the splits criteria
-  sgmnts %>% sapply(function(terminalNode){
-    path <- terminalNode %>% pathForTerminalNode
-
-    path %>% length %>% seq %>%
-      sapply(function(nodeNumber){
-        dataFilter(ct, dts, path, terminalNode, nodeNumber)
-       }, simplify = FALSE) %>%
-      unlist %>% rmDuplicateVariables %>%
-      paste(collapse = " & ") %>%
-      data.frame(Node = terminalNode, Path = .)
-
-  }, simplify = FALSE) %>%
-    Reduce(f = rbind) %>%
-    dplyr::arrange(Node)
+#' readCtreePaths(act, airq)
+readCtreePaths <- function (ct, dts) {
+  if (ct %>% treeIsEmpty) return(data.frame())
+  ct %>%
+    readSegments %>%
+    readSplittingCriteria(ct, dts)
 }

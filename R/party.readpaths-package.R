@@ -4,5 +4,5 @@
 #'
 #' @name party.readpaths
 #' @docType package
-#' @importFrom magrittr `%>%`
+#' @importFrom magrittr "%>%"
 NULL
