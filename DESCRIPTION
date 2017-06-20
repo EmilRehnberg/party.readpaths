@@ -4,7 +4,7 @@ Version: 0.1
 Authors@R: person("Emil", "Rehnberg", email = "emil.rehnberg@gmail.com", role = c("aut", "cre"))
 Description: The original party package does not come with a function for extracting the paths of the terminal nodes from a ctree. This package gives you a function for this purpose.
 Depends:
-    R (>= 3.3.1),
+    R (>= 3.3.0),
     party (>= 1.2.3)
 License: GPL-3 | file LICENSE
 URL: http://github.com/emilrehnberg/party.readpaths
