@@ -2,24 +2,15 @@ buildDataFilter <- function(nodeSplit, ...) UseMethod("buildDataFilter")
 
 buildDataFilter.nominalSplit <-
   function(nodeSplit, dts, whichWeights){
-    varName <- nodeSplit$variableName
-    includedLevels <- dts[ whichWeights
-                          ,varName] %>% unique
-    paste( varName, "=="
-          ,includedLevels %>% paste(collapse = ", ") %>% paste0("{", ., "}"))
+    buildNominalCriteria( nodeSplit$variableName
+                         ,dts[ whichWeights, nodeSplit$variableName] %>% unique)
   }
 
 buildDataFilter.orderedSplit <-
   function(nodeSplit, dts, whichWeights){
-    varName <- nodeSplit$variableName
-    splitter <- nodeSplit %>% readSplitter
-
-    dts[ whichWeights
-        ,varName] %>%
-          is_weakly_less_than(splitter) %>%
-          all %>%
-          ifelse("<=", ">") %>%
-          paste(varName, ., splitter)
+    buildOrdinalCriteria( nodeSplit$variableName
+                         ,nodeSplit %>% readSplitter
+                         ,dts[whichWeights,])
 }
 
 readSplitter <- function(nodeSplit){
@@ -29,4 +20,18 @@ readSplitter <- function(nodeSplit){
   } else {
     splitPoint %>% as.numeric
   }
+}
+
+buildNominalCriteria <- function(varName, inclLevels){
+  paste( varName
+        ,"=="
+        ,inclLevels %>% paste(collapse = ", ") %>% paste0("{", ., "}"))
+}
+
+buildOrdinalCriteria <- function(varName, splitter, dts){
+  dts[,varName] %>%
+    is_weakly_less_than(splitter) %>%
+    all %>%
+    ifelse("<=", ">") %>%
+    paste(varName, ., splitter)
 }
