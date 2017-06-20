@@ -13,15 +13,6 @@ readNodePathForTerminalNodes <- function(terminalNode, sgmnts, ct){
     unlist
 }
 
-readSplitter <- function(nodeSplit){
-  splitPoint <- nodeSplit$splitpoint
-  if ("levels" %>% is_in(splitPoint %>% attributes %>% names)) {
-    splitPoint %>% attr("levels") %>% .[splitPoint]
-  } else {
-    splitPoint %>% as.numeric
-  }
-}
-
 pathFromPathNumber <- function(path, pathNumber, terminalNode){
   pathNumber %>%
     magrittr::equals(path %>% length) %>%

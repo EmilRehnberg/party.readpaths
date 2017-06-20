@@ -21,3 +21,12 @@ buildDataFilter.orderedSplit <-
           ifelse("<=", ">") %>%
           paste(varName, ., splitter)
 }
+
+readSplitter <- function(nodeSplit){
+  splitPoint <- nodeSplit$splitpoint
+  if ("levels" %>% is_in(splitPoint %>% attributes %>% names)) {
+    splitPoint %>% attr("levels") %>% .[splitPoint]
+  } else {
+    splitPoint %>% as.numeric
+  }
+}
