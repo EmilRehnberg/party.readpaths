@@ -1,7 +1,7 @@
 treeIsEmpty <- function(ct) ct@tree$left %>% identical(NULL)
-readSegments <- function(ct) party::where(ct) %>% unique
-readNodeWeights <- function(ct, node) party::nodes(ct, node)[[1]]$weights
-nodesFirstTreeWeightIsOne <- function(ct, node) party::nodes(ct, node)[[1]][2][[1]] == 1
+readSegments <- function(ct) ct %>% partyWhere %>% unique
+readNodeWeights <- function(ct, node) partyNodes(ct, node)[[1]]$weights
+nodesFirstTreeWeightIsOne <- function(ct, node) partyNodes(ct, node)[[1]][2][[1]] == 1
 readInnerNodes <- function(sgmnts, node) setdiff( 1:(node - 1) ,sgmnts[sgmnts < node])
 
 # Take the inner nodes smaller than the selected terminal node
@@ -15,15 +15,15 @@ readNodePathForTerminalNodes <- function(terminalNode, sgmnts, ct){
 
 pathFromPathNumber <- function(path, pathNumber, terminalNode){
   pathNumber %>%
-    magrittr::equals(path %>% length) %>%
+    magEquals(path %>% length) %>%
     ifelse(terminalNode, path[pathNumber + 1])
 }
 
 hasWeigths <- function(ct, path, terminalNode, pathNumber){
   ct %>%
-    party::nodes(pathFromPathNumber(path, pathNumber, terminalNode)) %>%
-    dplyr::first %>%
-    magrittr::use_series("weights") %>%
+    partyNodes(pathFromPathNumber(path, pathNumber, terminalNode)) %>%
+    dplyrFirst %>%
+    use_series("weights") %>%
     as.logical %>%
     which
 }
@@ -34,13 +34,13 @@ rmDuplicateVariables <- function(filters){
     data.frame( varName = gsub("^(\\w+).*$", "\\1", .)
                ,filter = .) %>%
     keepFirstOccuranceForCol("varName") %>%
-    magrittr::use_series("filter") %>%
+    use_series("filter") %>%
     as.character
 }
 
 dataFilter <- function(ct, dts, path, terminalNode, pathNumber){
   whichWeights <- hasWeigths(ct, path, terminalNode, pathNumber)
-  party::nodes(ct, path[pathNumber])[[1]][[5]] %>%
+  partyNodes(ct, path[pathNumber])[[1]][[5]] %>%
     buildDataFilter(dts, whichWeights)
 }
 
@@ -51,7 +51,7 @@ readSplittingCriteria <- function(sgmnts, ct, dts){
       readSplitCriterionForPath(ct, dts, terminalNode)
   }, simplify = FALSE) %>%
     Reduce(f = rbind) %>%
-    dplyr::arrange(Node)
+    dplyrOrderBy(Node)
 }
 
 readSplitCriterionForPath <- function(path, ct, dts, terminalNode){

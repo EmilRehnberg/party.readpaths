@@ -15,7 +15,7 @@ describe("readCtreePaths()", {
 
   pathForNode <- function(paths, nodeNumber){
     paths %>%
-      dplyr::filter(Node == nodeNumber) %>%
+      dplyrWhere(Node == nodeNumber) %>%
       use_series(Path) %>%
       as.character
   }

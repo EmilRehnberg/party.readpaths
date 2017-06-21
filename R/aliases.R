@@ -1,0 +1,7 @@
+partyWhere <- function(...) party::where(...)
+partyNodes <- function(...) party::nodes(...)
+magEquals <- function(...) magrittr::equals(...)
+dplyrFirst <- function(...) dplyr::first(...)
+dplyrOrderBy <- function(...) dplyr::arrange(...)
+dplyrGroupByString <- function(...) dplyr::group_by_(...)
+dplyrWhere <- function(...) dplyr::filter(...)
