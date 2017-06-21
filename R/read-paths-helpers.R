@@ -1,5 +1,5 @@
 treeIsEmpty <- function(ct) ct@tree$left %>% identical(NULL)
-readSegments <- function(ct) ct %>% party::where %>% unique
+readSegments <- function(ct) party::where(ct) %>% unique
 readNodeWeights <- function(ct, node) party::nodes(ct, node)[[1]]$weights
 nodesFirstTreeWeightIsOne <- function(ct, node) party::nodes(ct, node)[[1]][2][[1]] == 1
 readInnerNodes <- function(sgmnts, node) setdiff( 1:(node - 1) ,sgmnts[sgmnts < node])
