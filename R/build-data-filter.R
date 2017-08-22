@@ -3,7 +3,7 @@ buildDataFilter <- function(nodeSplit, ...) UseMethod("buildDataFilter")
 buildDataFilter.nominalSplit <-
   function(nodeSplit, dts, whichWeights){
     buildNominalCriteria( nodeSplit$variableName
-                         ,dts[ whichWeights, nodeSplit$variableName] %>% unique)
+                         ,dts %>% as.data.frame %>% .[ whichWeights, nodeSplit$variableName] %>% unique)
   }
 
 buildDataFilter.orderedSplit <-

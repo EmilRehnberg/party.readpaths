@@ -26,13 +26,20 @@ describe("readCtreePaths()", {
     expect_equal(pathForNode(paths, 8), "Wind <= 10.3 & Temp > 82")
   })
 
-  it("works as expected with mixed ordinal and nominal variables", {
+  it("works as expected with mixed ordinal and nominal variables / also when data is a tibble df", {
     load("./lead-buyrate.RData") # loads gdt
     gct <- ctree( is_buyer ~ ., data = gdt)
     mixedPaths <- readCtreePaths(gct, gdt)
 
     expect_equal(pathForNode(mixedPaths, 4), "city == {LA}")
     expect_equal(pathForNode(mixedPaths, 8), "point > 0.851221123244613 & age <= mid & city == {Chigaco, Memphis, Boston}")
+
+    gdt_tbl <- gdt %>% (tibble::as.tibble)
+    gct2 <- ctree( is_buyer ~ ., data = gdt_tbl)
+    mixedPaths2 <- readCtreePaths(gct2, gdt_tbl)
+
+    expect_equal(pathForNode(mixedPaths2, 4), "city == {LA}")
+    expect_equal(pathForNode(mixedPaths2, 8), "point > 0.851221123244613 & age <= mid & city == {Chigaco, Memphis, Boston}")
   })
 
   it("order by terminal node number", {

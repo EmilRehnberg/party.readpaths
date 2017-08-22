@@ -1,6 +1,6 @@
 Package: party.readpaths
 Title: Reads Terminal Node Paths (from party::ctree)
-Version: 0.1
+Version: 0.2
 Authors@R: person("Emil", "Rehnberg", email = "emil.rehnberg@gmail.com", role = c("aut", "cre"))
 Description: The original party package does not come with a function for extracting the paths of the terminal nodes from a ctree. This package gives you a function for this purpose.
 Depends:
