@@ -1,5 +1,5 @@
 keepFirstOccuranceForCol <- function(dts, column){
   dts %>%
     dplyrGroupByString(column) %>%
-    dplyrWhere(row_number() == 1)
+    dplyrWhere(dplyr::row_number() == 1)
 }
